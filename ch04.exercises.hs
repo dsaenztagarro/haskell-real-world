@@ -1,4 +1,5 @@
 import Data.Char (digitToInt, isNumber)
+import Data.List (groupBy)
 
 asIntList :: String -> [Int]
 asIntList str = map digitToInt $ takeWhile maybeNumber str
@@ -23,16 +24,33 @@ asInt_fold str
 -- asInt_fold "25sdf34" # => *** Exception: non-digit: s
 
 concat :: [[a]] -> [a]
-concat list = foldr acum [] list
-    where acum nested_list list = nested_list ++ list
+concat xs = foldr step [] xs
+    where step x ys = x ++ ys
 
 -- Main.concat [['a', 'b'], ['c', 'd']]    # => "abcd"
 -- Prelude.concat [['a', 'b'], ['c', 'd']] # => "abcd"
 
 takeWhile' condition (x:xs) = if condition x
-                           then [x] ++ (takeWhile' condition xs)
-                           else []
+                              then [x] ++ (takeWhile' condition xs)
+                              else []
 takeWhile' _ [] = []
 
+-- explicit recursion
 -- takeWhile' isNumber "12sd" # => "12"
+
+takeWhile'' condition xs = foldr acum [] xs
+    where acum x ys = if isNumber x then [x] ++ ys else []
+
+-- using foldr
+
+numberAndLetter x y = (isNumber) x && not (isNumber y)
+
+groupBy' condition xs = result $ foldl step ([], []) xs
+    where step (ys, zs) x = if length zs == 0 || condition (head zs) x
+                            then (ys, zs ++ [x])
+                            else (ys ++ [zs], [x])
+          result (ys, zs) = ys ++ [zs]
+
+-- groupBy' numberAndLetter "1aa33z" # => ["1aa","3","3z"]
+-- groupBy' numberAndLetter "1aa2bb" # => ["1aa","2bb","3cc"]
 
