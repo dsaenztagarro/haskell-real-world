@@ -39,7 +39,7 @@ takeWhile' _ [] = []
 -- takeWhile' isNumber "12sd" # => "12"
 
 takeWhile'' condition xs = foldr acum [] xs
-    where acum x ys = if isNumber x then [x] ++ ys else []
+    where acum x ys = if isNumber x then x:ys else []
 
 -- using foldr
 
@@ -53,4 +53,15 @@ groupBy' condition xs = result $ foldl step ([], []) xs
 
 -- groupBy' numberAndLetter "1aa33z" # => ["1aa","3","3z"]
 -- groupBy' numberAndLetter "1aa2bb" # => ["1aa","2bb","3cc"]
+
+any' check xs = foldl step False xs
+    where step result x = if result then result else check x
+
+-- any' isNumber "abc" # => False
+-- any' isNumber "a1bc" # => True
+
+cycle' xs = foldr step [] [1..]
+    where step x ys = xs ++ ys
+
+-- take 8 $ cycle "abc" # => "abcabcab"
 
