@@ -1,4 +1,4 @@
-import Data.Char (digitToInt, isNumber)
+import Data.Char (digitToInt, isNumber, isSpace)
 import Data.List (groupBy)
 
 asIntList :: String -> [Int]
@@ -60,8 +60,19 @@ any' check xs = foldl step False xs
 -- any' isNumber "abc" # => False
 -- any' isNumber "a1bc" # => True
 
-cycle' xs = foldr step [] [1..]
-    where step x ys = xs ++ ys
+cycle' xs = foldr step xs [1..]
+    where step x ys = ys ++ ys
 
 -- take 8 $ cycle "abc" # => "abcabcab"
+
+-- words' xs = foldl step [] xs
+--     where step ys x = if (isSpace x) || (length ys == 0)
+--                       then ys ++ [[]]
+--                       else ys ++ [x]
+
+
+-- words' xs = foldr step [] xs
+--     where step x ys = if isSpace x && (length head xs == 0)
+--                       then ys
+--                       else
 
