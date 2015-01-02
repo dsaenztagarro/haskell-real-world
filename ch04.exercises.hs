@@ -65,14 +65,13 @@ cycle' xs = foldr step xs [1..]
 
 -- take 8 $ cycle "abc" # => "abcabcab"
 
--- words' xs = foldl step [] xs
---     where step ys x = if (isSpace x) || (length ys == 0)
---                       then ys ++ [[]]
---                       else ys ++ [x]
+words' xs = foldr step [""] xs
+    where step x ys = if isSpace x
+                      then addSpace ys
+                      else addLetter x ys
+          addSpace ys = if (length $ head ys) > 0
+                        then []:ys
+                        else ys
+          addLetter x ys = (x:(head ys)):(tail ys)
 
-
--- words' xs = foldr step [] xs
---     where step x ys = if isSpace x && (length head xs == 0)
---                       then ys
---                       else
-
+-- words' "aa  bb c" # => ["aa","bb","c"]
