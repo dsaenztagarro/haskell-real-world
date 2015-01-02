@@ -74,4 +74,17 @@ words' xs = foldr step [""] xs
                         else ys
           addLetter x ys = (x:(head ys)):(tail ys)
 
--- words' "aa  bb c" # => ["aa","bb","c"]
+words'' xs = foldr step [""] $ justOneSpace xs
+    where step x ys = if isSpace x
+                      then []:ys
+                      else (x:(head ys)):(tail ys)
+          justOneSpace zs = foldr step' "" zs
+              where step' x ys = if ((length ys > 0) && (isSpace $ head ys) && (isSpace x)) ||
+                                    ((length ys == 0) && (isSpace x))
+                                 then ys
+                                 else x:ys
+
+-- words' "aa  bb c " # => ["aa","bb","c"]
+
+unlines' xs = foldl step "" xs
+    where step ys x = ys ++ x ++ ['\n']
