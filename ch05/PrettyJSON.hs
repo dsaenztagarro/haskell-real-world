@@ -1,4 +1,8 @@
-import Numeric
+import SimpleJSON
+import PrettyStub
+import Numeric (showHex)
+import Data.Char (ord)
+import Data.Bits (shiftR, (.&.))
 
 renderJValue :: JValue -> Doc
 renderJValue (JBool True)  = text "true"
@@ -12,6 +16,8 @@ string = enclose '"' '"' . hcat . map oneChar
 
 enclose :: Char -> Char -> Doc -> Doc
 enclose left right x = char left <> x <> char right
+
+-- lookup :: Eq a => a -> [(a,b)] -> Maybe b
 
 oneChar :: Char -> Doc
 oneChar c = case lookup c simpleEscapes of
@@ -29,3 +35,13 @@ smallHex x = text "\\u"
           <> text (replicate (4 - length h) '0')
           <> text h
     where h = showHex x ""
+
+astral :: Int -> Doc
+astral n = smallHex (a + 0xd800) <> smallHex (b + 0xdc00)
+    where a = (n `shiftR` 10) .&. 0x3ff
+          b = n .&. 0x3ff
+
+hexEscape :: Char -> Doc
+hexEscape c | d < 0x10000 = smallHex d
+            | otherwise = astral (d - 0x10000)
+    where d = ord c
