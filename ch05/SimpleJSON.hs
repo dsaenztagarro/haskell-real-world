@@ -11,8 +11,7 @@ module SimpleJSON
     ) where
 
 data JValue = JString String
-            | JNumber Double
-            | JBool Bool
+            | JNumber Double | JBool Bool
             | JNull
             | JObject [(String, JValue)]
             | JArray [JValue]
@@ -34,6 +33,6 @@ getObject(JObject o) = Just o
 getObject _          = Nothing
 
 getArray(JArray a) = Just a
-getArray _         = Nothing
+getsArray _         = Nothing
 
 isNull v = v == JNull
