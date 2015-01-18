@@ -3,7 +3,8 @@ module Prettify where
 data Doc = Empty
          | Char Char
          | Text String
-         | Line -- represents a line break
+         | Line     -- represents a line break
+         | Fill Int -- represents trailing whitespaces
          | Concat Doc Doc
          | Union Doc Doc
          deriving (Show,Eq)
@@ -75,24 +76,35 @@ compact x = transform [x]
 
 pretty :: Int -> Doc -> String
 pretty width x = best 0 [x]
-		where
-				best col (d:ds) =
-	 					case d of
-			 				Empty        -> best col ds
-			 				Char c       -> c : best (col + 1) ds
-							Text s       -> s ++ best (col + length s) ds
-							Line         -> '\n' : best 0 ds
- 							a `Concat` b -> best col (a:b:ds)
- 							a `Union` b  -> nicest col (best col (a:ds))
- 																				 (best col (b:ds))
-				best _ _ = ""
+    where
+      best col (d:ds) =
+        case d of
+             Empty  -> best col ds
+             Char c -> c : best (col + 1) ds
+             Text s -> s ++ best (col + length s) ds
+             Line   -> '\n' : best 0 ds
+             Fill n -> (blanks col n) ++ ['\n'] ++ best 0 ds
+             a `Concat` b -> best col (a:b:ds)
+             a `Union` b  -> nicest col (best col (a:ds))
+                                        (best col (b:ds))
+      best _ _ = ""
 
-				nicest col a b | (width - least) `fits` a = a
-											 | otherwise = b
-											 where least = min width col
+      nicest col a b | (width - least) `fits` a = a
+                     | otherwise = b
+                     where least = min width col
+
+      blanks col n = replicate (n - least) '*'
+        where least = min col n
 
 fits :: Int -> String -> Bool
 w `fits` _ | w < 0 = False
 _ `fits` ""        = True
 _ `fits` ('\n':_)  = True
 w `fits` (_:cs)    = (w - 1) `fits` cs
+
+fill :: Int -> Doc -> Doc
+fill width d = fill' width (d `Concat` Fill width)
+    where fill' width (a `Concat` b) = (fill' width a) `Concat` (fill' width b)
+          fill' width (a `Union` b) = (fill' width a) `Union` (fill' width b)
+          fill' width Line = Fill width
+          fill' _ d = d
