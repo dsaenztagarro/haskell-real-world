@@ -1,2 +1,4 @@
 *.hi
 *.o
+*.log
+ch05/dist

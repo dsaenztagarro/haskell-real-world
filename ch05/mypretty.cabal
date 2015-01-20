@@ -1,0 +1,14 @@
+Name:   mypretty
+Version:  0.1
+Cabal-Version:  >= 1.2
+License:  BSD3
+Author:   Real World Haskell
+Category: Learning
+Synopsis: Creating a package
+Maintainer: nobody@realworldhaskell.org
+Build-Type: Simple
+
+Library
+  Build-Depends:  base >= 2.0
+  Exposed-modules:
+    Prettify, PrettyJSON, SimpleJSON
