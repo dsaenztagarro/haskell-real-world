@@ -1,7 +1,7 @@
-import Prelude hiding(catch)
 import System.IO
 import System.Directory(getTemporaryDirectory, removeFile)
-import Control.Exception(catch, finally)
+import System.IO.Error
+import Control.Exception(catch, finally, IOException)
 
 main :: IO ()
 main = withTempFile "mytemp.txt" myAction
@@ -33,8 +33,9 @@ myAction tempname temph = do
 
 withTempFile :: String -> (FilePath -> Handle -> IO a) -> IO a
 withTempFile pattern func = do
-    tempdir <- catch (getTemporaryDirectory) (\_ -> return ".")
-    -- let tempdir = "."
+    tempdir <- (getTemporaryDirectory) `catch` (\e -> do
+                  let _ = e :: IOException
+                  return ".")
     (tempfile, temph) <- openTempFile tempdir pattern
 
     finally (func tempfile temph)
