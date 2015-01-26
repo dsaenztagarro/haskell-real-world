@@ -10,9 +10,9 @@ getRecursiveContents topdir = do
     names <- getDirectoryContents topdir
     let properNames = filter (`notElem` [".", ".."]) names
     paths <- forM properNames $ \name -> do
-      let path = topdir </> name
-      isDirectory <- doesDirectoryExist path
-      if isDirectory
-         then getRecursiveContents path
-         else return [path]
-      return (concat paths)
+        let path = topdir </> name
+        isDirectory <- doesDirectoryExist path
+        if isDirectory
+           then getRecursiveContents path
+           else return [path]
+    return (concat paths)
