@@ -78,3 +78,20 @@ liftP q f k w x y z = f w x y z `q` k
 greaterP, lesserP :: (Ord a) => InfoP a -> a -> InfoP Bool
 greaterP = liftP (>)
 lesserP = liftP (<)
+
+liftP2 :: (a -> b -> c) -> InfoP a -> InfoP b -> InfoP c
+liftP2 q f g w x y z = f w x y z `q` g w x y z
+
+andP = liftP2 (&&)
+orP = liftP2 (||)
+
+constP :: a -> InfoP a
+constP k _ _ _ _ = a
+
+liftP' q f k w x y z = f w x y z `q` constP k w x y z
+
+liftPath :: (FilePath -> a) -> InfoP a
+liftPath f w _ _ _ = f w
+
+myTest2 = (liftPath takeExtension `equalP` ".cpp") `andP`
+          (sizeP `greaterP` 131072)
