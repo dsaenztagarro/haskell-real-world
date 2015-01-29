@@ -94,3 +94,15 @@ liftPath f w _ _ _ = f w
 
 myTest2 = (liftPath takeExtension `equalP` ".cpp") `andP`
           (sizeP `greaterP` 131072)
+
+(==?) = equalP
+(&&?) = andP
+(>?) = greaterP
+
+myTest3 = (liftPath takeExtension ==? ".cpp") &&? (sizeP >? 131072)
+
+infix 4 ==?
+infix 3 &&?
+infix 4 >?
+
+myTest4 = liftPath takeExtension ==? ".cpp" &&? sizeP >? 131072
