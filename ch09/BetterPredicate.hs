@@ -85,7 +85,7 @@ andP = liftP2 (&&)
 orP = liftP2 (||)
 
 constP :: a -> InfoP a
-constP k _ _ _ _ = a
+constP k _ _ _ _ = k
 
 liftP' q f k w x y z = f w x y z `q` constP k w x y z
 
