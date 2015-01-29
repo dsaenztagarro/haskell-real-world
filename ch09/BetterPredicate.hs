@@ -1,11 +1,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
-import Control.Monad (filterM)
-import System.Directory (Permissions(..), getModificationTime, getPermissions)
--- import System.Time
-import Data.Time.Clock
-import System.FilePath (takeExtension)
 import Control.Exception (bracket, handle, IOException)
+import Control.Monad (filterM)
+import Data.Time.Clock
+import System.Directory (Permissions(..), getModificationTime, getPermissions)
+import System.FilePath (takeExtension)
 import System.IO (IOMode(..), hClose, hFileSize, openFile)
 
 -- the function we wrote earlier
