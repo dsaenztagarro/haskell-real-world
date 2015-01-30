@@ -1,5 +1,15 @@
-import Control.Monad (liftM)
+{-# LANGUAGE ScopedTypeVariables #-}
+
+module ControlledVisit (traverse) where
+
+import Control.Exception (bracket, handle, IOException)
+import Control.Monad (liftM, forM)
 import Data.Time.Clock
+import System.Directory (Permissions(..), getModificationTime, getPermissions,
+                         getDirectoryContents)
+import System.FilePath (takeExtension)
+import System.FilePath.Posix ((</>))
+import System.IO (IOMode(..), hClose, hFileSize, openFile)
 
 data Info = Info
     { infoPath :: FilePath
@@ -28,7 +38,7 @@ isDirectory :: Info -> Bool
 isDirectory = maybe False searchable . infoPerms
 
 maybeIO :: IO a -> IO (Maybe a)
-maybeIO act = handle (\_ -> return Nothing) (Just `liftM` act)
+maybeIO act = handle (\(_ :: IOException) -> return Nothing) (Just `liftM` act)
 
 getInfo path = do
     perms <- maybeIO (getPermissions path)
