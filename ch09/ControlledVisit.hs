@@ -1,6 +1,14 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module ControlledVisit (traverse) where
+module ControlledVisit
+    (
+      getInfo
+    , getUsefulContents
+    , Info(..)
+    , isDirectory
+    , traverse
+    , maybeIO
+    ) where
 
 import Control.Exception (bracket, handle, IOException)
 import Control.Monad (liftM, forM)
