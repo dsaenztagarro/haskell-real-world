@@ -1,13 +1,10 @@
-module Parse
-  (
-    parse
-  , Parse(..)
-  ) where
+module Parse where
 
-import Data.Int (Int64)
-
+import Control.Applicative ((<$>))
 import qualified Data.ByteString.Lazy.Char8 as L8
 import qualified Data.ByteString.Lazy as L
+import Data.Char (chr)
+import Data.Int (Int64)
 import Data.Word (Word8)
 
 data ParseState = ParseState
@@ -66,3 +63,16 @@ firstParser ==> secondParser = Parse chainedParser
             Left errMessage -> Left errMessage
             Right (firstResult, newState) ->
               runParse (secondParser firstResult) newState
+
+instance Functor Parse where
+    fmap f parser = parser ==> \result ->
+                    identity (f result)
+
+w2c :: Word8 -> Char
+w2c = chr . fromIntegral
+
+parseChar :: Parse Char
+parseChar = w2c <$> parseByte
+
+peekByte :: Parse (Maybe Word8)
+peekByte = (fmap fst . L.uncons . string) <$> getState
