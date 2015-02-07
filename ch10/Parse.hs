@@ -6,6 +6,7 @@ module Parse
 
 import Data.Int (Int64)
 
+import qualified Data.ByteString.Lazy.Char8 as L8
 import qualified Data.ByteString.Lazy as L
 
 data ParseState = ParseState
@@ -28,3 +29,9 @@ parse parser initState =
     case runParse parser (ParseState initState 0) of
          Left err -> Left err
          Right (result, _) -> Right result
+
+modifyOffset :: ParseState -> Int64 -> ParseState
+modifyOffset initState newOffset =
+    initState { offset = newOffset }
+
+
