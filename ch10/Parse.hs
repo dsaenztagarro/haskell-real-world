@@ -76,3 +76,21 @@ parseChar = w2c <$> parseByte
 
 peekByte :: Parse (Maybe Word8)
 peekByte = (fmap fst . L.uncons . string) <$> getState
+
+parseWhile :: (Word8 -> Bool) -> Parse[Word8]
+parseWhile p = (fmap p <$> peekByte) ==> \mp ->
+               if mp == Just True
+               then parseByte ==> \b ->
+                    (b:) <$> parseWhile p
+               else identity []
+
+parseWhileVerbose p =
+    peekByte ==> \mc ->
+    case mc of
+      Nothing -> identity []
+      Just c | p c ->
+                 parseByte ==> \b ->
+                 parseWhileVerbose p ==> \bs ->
+                 identity (b:bs)
+             | otherwise ->
+                 identity []
