@@ -85,4 +85,4 @@ parseP5_take2 s =
     \(bitmap, s) -> Just (Greymap width height maxGrey bitmap, s)
 
 skipSpace :: (a, L.ByteString) -> Maybe (a, L.ByteString)
-skpSpace (a, s) = Just (a, L8.dropWhile isSpace s)
+skipSpace (a, s) = Just (a, L8.dropWhile isSpace s)

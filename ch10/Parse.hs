@@ -1,11 +1,19 @@
 module Parse where
 
 import Control.Applicative ((<$>))
+import Data.Attoparsec.ByteString.Char8 (isDigit, isSpace)
 import qualified Data.ByteString.Lazy.Char8 as L8
 import qualified Data.ByteString.Lazy as L
 import Data.Char (chr)
 import Data.Int (Int64)
 import Data.Word (Word8)
+
+data Greymap = Greymap
+    { greyWidth :: Int
+    , greyHeight :: Int
+    , greyMax :: Int
+    , greyData :: L.ByteString
+    } deriving (Eq)
 
 data ParseState = ParseState
     { string :: L.ByteString
@@ -99,7 +107,7 @@ parseRawPGM =
     parseWhileWith w2c notWhite ==> \header -> skipSpaces ==>&
     assert (header == "P5") "invalid raw header" ==>&
     parseNat ==> \width -> skipSpaces ==>&
-    parseNat ==> \height -> skpSpaces ==>&
+    parseNat ==> \height -> skipSpaces ==>&
     parseNat ==> \maxGrey ->
     parseByte ==>&
     parseBytes (width * height) ==> \bitmap ->
