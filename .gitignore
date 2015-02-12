@@ -1,4 +1,5 @@
 *.hi
 *.o
 *.log
-ch05/dist
+./ch05/dist./ch06/SimpleJSON.hs
+./ch11/Prettify.hs
