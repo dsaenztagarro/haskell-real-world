@@ -1,4 +1,12 @@
+# Haskell compilation files
 *.hi
 *.o
+
+# Haskell program coverage files
+.hpc/
+*.tix
+*.html
+
 *.log
+Run
 ./ch05/dist./ch06/SimpleJSON.hs

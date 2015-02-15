@@ -14,4 +14,13 @@ Running tests
 ```shell
 ghc --make Run.hs
 ./Run
+
+# Test coverage
+ghc -fhpc Run.hs --make
+./Run
+hpc report Run --exclude=Main --exclude=QC
+hpc markup Run --exclude=Main --exclude=QC
+
+# Adding tests
+ghc -fhpc Run.hs --make -no-recomp
 ```
