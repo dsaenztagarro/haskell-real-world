@@ -1,4 +1,17 @@
-module Parse where
+module Parse
+    (
+      assert
+    , (==>)
+    , (==>&)
+    , identity
+    , Parse
+    , parseByte
+    , parseBytes
+    , parseNat
+    , parseWhileWith
+    , skipSpaces
+    , w2c
+    ) where
 
 import Control.Applicative ((<$>))
 import Data.Attoparsec.ByteString.Char8 (isDigit, isSpace)
