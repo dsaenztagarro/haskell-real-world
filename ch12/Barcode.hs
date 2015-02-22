@@ -196,14 +196,14 @@ chunkWith f xs = let (h, t) = f xs
                  in h : chunkWith f t
 
 chunksOf :: Int -> [a] -> [[a]]
-chunksOf n = chunWith (splitAt n)
+chunksOf n = chunkWith (splitAt n)
 
 candidateDigits :: RunLength Bit -> [[Parity Digit]]
 candidateDigits ((_, One):_) = []
 candidateDigits rle | length < 59 = []
 candidateDigits rle
     | any null match = []
-    | othewise = map (map (fmap snd)) match
+    | otherwise = map (map (fmap snd)) match
   where match = map bestLeft left ++ map bestRight right
         left = chunksOf 4 . take 24 . drop 3 $ runLengths
         right = chunksOf 4 . take 24 . drop 32 $ runLengths
@@ -249,7 +249,7 @@ addFirstDigit :: ParityMap -> DigitMap
 addFirstDigit = M.foldWithKey updateFirst M.empty
 
 updateFirst :: Digit -> [Parity Digit] -> DigitMap -> DigitMap
-updateFirst key seq = insertMap key digit (digit:renomarlize qes)
+updateFirst key seq = insertMap key digit (digit:renormalize qes)
     where renormalize = mapEveryOther (`div` 3) . map fromParity
           digit = firstDigit qes
           qes = reverse seq
@@ -260,9 +260,41 @@ buildMap = M.mapKeys (10 -)
          . finalDigits
 
 solve :: [[Parity Digit]] -> [[Digit]]
-solve [] -> []
+solve [] = []
 solve xs = catMaybes $ map (addCheckDigit m) checkDigits
     where checkDigits = map fromParity (last xs)
           m = buildMap (init xs)
           addCheckDigit m k = (++[k]) <$> M.lookup k m
+
+withRow :: Int -> Pixmap -> (RunLength Bit -> a) -> a
+withRow n greymap f = f . runLength . elems $ posterized
+    where posterized = threshold 0.4 . fmap luminance . row n $ greymap
+
+row :: (Ix a, Ix b) => b -> Array (a,b) c -> Array a c
+row j a = ixmap (l,u) project a
+    where project i = (i,j)
+          ((l,_), (u,_)) = bounds a
+
+findMatch :: [(Run, Bit)] -> Maybe [[Digit]]
+findMatch = listToMaybe
+          . filter (not . null)
+          . map (solve . candidateDigits)
+          . tails
+
+findEAN13 :: Pixmap -> Maybe [Digit]
+findEAN13 pixmap = withRow center pixmap (fmap head . findMatch)
+    where (_, (maxX, _)) = bounds pixmap
+          center = (maxX + 1) `div` 2
+
+main :: IO ()
+main = do
+  args <-getArgs
+  forM_ args $ \arg -> do
+    e <- parse parseRawPPM <$> L.readFile arg
+    case e of
+      Left err -> print $ "error: " ++ err
+      Right pixmap -> print $ findEAN13 pixmap
+
+
+
 

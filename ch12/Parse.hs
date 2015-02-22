@@ -5,6 +5,7 @@ module Parse
     , (==>&)
     , identity
     , Parse
+    , parse
     , parseByte
     , parseBytes
     , parseNat
@@ -159,5 +160,3 @@ parseBytes n =
     in putState st' ==>&
         assert (L.length h == n') "end of input" ==>&
         identity h
-
-
