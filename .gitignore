@@ -7,6 +7,10 @@
 *.tix
 *.html
 
+# Cabal files
+.cabal-sandbox
+cabal.sandbox.config
+
 *.log
 Run
 ./ch05/dist./ch06/SimpleJSON.hs
