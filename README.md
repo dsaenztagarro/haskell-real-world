@@ -23,6 +23,13 @@ cabal install mtl
 ```haskell
 -- ch14/Random.hs
 twoBadRandoms `fmap` getStdGen
+
+-- ch15/Supply.hs
+runSupply next [1,2,3]
+runSupply (liftM2 (,) next next) [1,2,3]
+
+-- ch15/RandomSupply.hs
+(fst . runSupply next) `fmap` randomsIO
 ```
 
 ### Running tests
@@ -40,3 +47,8 @@ hpc markup Run --exclude=Main --exclude=QC
 # Adding tests
 ghc -fhpc Run.hs --make -no-recomp
 ```
+
+### Review
+
+- [ ] ‘Supply’ is an instance of Monad but not Applicative - this will become 
+      an error in GHC 7.10, under the Applicative-Monad Proposal.
