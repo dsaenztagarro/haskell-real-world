@@ -1,6 +1,6 @@
 # Haskell Real World
 
-All exercises have been modified in order to run with Haskell 2014
+All exercises have been modified in order to run with GHC 7.8.4
 
 ### Packages globally installed
 
@@ -30,6 +30,11 @@ runSupply (liftM2 (,) next next) [1,2,3]
 
 -- ch15/RandomSupply.hs
 (fst . runSupply next) `fmap` randomsIO
+
+-- ch15/SupplyInstance.hs
+runReader (ask >>= \x -> return (x * 3)) 2
+(fst . runSupply xy) `fmap` randomsIO
+runMS xy 2
 ```
 
 ### Running tests

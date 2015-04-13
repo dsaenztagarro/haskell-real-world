@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances, FunctionalDependencies,
              MultiParamTypeClasses #-}
 
-module SupplyClasss
+module SupplyClass
     (
       MonadSupply(..)
     , S.Supply
