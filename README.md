@@ -18,7 +18,7 @@ cabal install random
 cabal install mtl
 ```
 
-### Examples
+### Examples (ghci)
 
 ```haskell
 -- ch14/Random.hs
@@ -35,6 +35,14 @@ runSupply (liftM2 (,) next next) [1,2,3]
 runReader (ask >>= \x -> return (x * 3)) 2
 (fst . runSupply xy) `fmap` randomsIO
 runMS xy 2
+
+-- ch18/CountEntries.hs
+-- runWriterT
+:module +Control.Monad.Trans.Writer.Lazy
+-- liftM
+:module +Control.Monad
+:load CountEntriesT.hs
+take 4 `liftM` execWriterT (countEntries "..")
 ```
 
 ### Running tests
