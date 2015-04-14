@@ -11,10 +11,14 @@ module HandleIO
     , hPutStrLn
     ) where
 
+import Control.Monad.Trans (MonadIO(..))
 import System.IO (Handle, IOMode(..))
 import qualified System.IO
 
 newtype HandleIO a = HandleIO { runHandleIO :: IO a } deriving (Monad)
+
+instance MonadIO HandleIO where
+    liftIO = HandleIO
 
 openFile :: FilePath -> IOMode -> HandleIO Handle
 openFile path mode = HandleIO (System.IO.openFile path mode)
@@ -30,3 +34,8 @@ safeHello path = do
     h <- openFile path WriteMode
     hPutStrLn h "hello world"
     hClose h
+
+tidyHello :: FilePath -> HandleIO ()
+tidyHello path = do
+  safeHello path
+  liftIO (removeFile path)
