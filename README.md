@@ -46,6 +46,10 @@ take 4 `liftM` execWriterT (countEntries "..")
 
 -- ch18/LocalReader.hs
 runReader localExample "Fred"
+
+-- ch18/UglyStack.hs
+fst `liftM` runApp (constrainedCount 0 ".") 1
+snd `liftM` runApp (constrainedCount 0 ".") 1
 ```
 
 ### Running tests
