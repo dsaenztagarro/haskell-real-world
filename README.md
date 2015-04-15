@@ -43,6 +43,9 @@ runMS xy 2
 :module +Control.Monad
 :load CountEntriesT.hs
 take 4 `liftM` execWriterT (countEntries "..")
+
+-- ch18/LocalReader.hs
+runReader localExample "Fred"
 ```
 
 ### Running tests
